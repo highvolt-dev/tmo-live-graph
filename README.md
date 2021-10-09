@@ -1,6 +1,48 @@
-# Getting Started with Create React App
+# tmo-live-graph
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simpe react app that plots a live view of the T-Mobile Home Internet Nokia 5G Gateway signal stats, helpful for optimizing signal.
+
+## Getting Started
+
+This project should be considered to be in a pre-release state.
+
+In order to properly fetch API responses from the Nokia Gateway in-browser, they must be proxied to work around CORS restrictions.
+
+This is handled automatically when running the project in development mode using webpack-dev-server with the following command:
+
+```
+npm start
+```
+
+This will start the project at http://localhost:3000/
+
+This project has not been prepared to handle proxying in a production-ready release mode.
+
+## Summarized Statistics
+
+### 4G LTE
+- Connected band
+- Current RSRP
+- Best RSRP
+- Current SNR
+- Best SNR
+
+### 5G NR
+- Connected band
+- Current RSRP
+- Best RSRP
+- Current SNR
+- Best SNR
+
+## Visualized Statistics
+
+### 4G LTE
+- RSRP value with reference lines for Min/Max RSRP
+- SNR value with reference lines for Min/Max RSRP
+
+### 5G NR
+- RSRP value with reference lines for Min/Max RSRP
+- SNR value with reference lines for Min/Max RSRP
 
 ## Available Scripts
 

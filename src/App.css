@@ -1,21 +1,13 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  min-height: 100vh;
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,16 +15,44 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.App-header .summary {
+  font-size: 40%;
+  display: flex;
+}
+.App-header .lte {
+  margin-right: 1em;
+}
+.App-header .nr {
+  margin-left: 1em;
+}
+dl {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: right;
+}
+dl dt {
+  width: 40%;
+  font-weight: bold;
+}
+dl dd {
+  width: auto;
+  flex-shrink: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-body {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.App-body .yAxis text {
+  fill: white;
+}
+.App-body .recharts-tooltip-wrapper {
+  color: #282c34;
+}
+.App-body .recharts-reference-line text {
+  fill: white;
 }
