@@ -37,6 +37,9 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
+# production
+/build
+
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -71,6 +74,10 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -102,3 +109,10 @@ dist
 
 # TernJS port file
 .tern-port
+
+# dependencies
+/.pnp
+.pnp.js
+
+# misc
+.DS_Store
