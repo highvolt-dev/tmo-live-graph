@@ -27,7 +27,7 @@ function App() {
   const [data, setData] = useState([]);
 
   const renderLineChart = (
-    <ComposedChart width={Math.min(1000, window.innerWidth)} height={500} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+    <ComposedChart width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
       <CartesianGrid stroke="#ccc" strokeDasharray=" 5 5" />
       <Area yAxisId="left"  type="monotone" dataKey="lte.SNRCurrent" stroke="red" fillOpacity={0.5} fill="red" />
 
@@ -72,39 +72,87 @@ function App() {
         <h1>Tmo Live Graph</h1>
         <div className="summary">
           <div className="lte">
-            <h2>LTE</h2>
+            <h2>4G LTE</h2>
             <h3>Band {data.length ? data.slice(-1)[0].lte.Band : 'N/A'}</h3>
             <h3>RSRP</h3>
             <dl>
               <dt>Current:</dt>
-              <dd>{data.length ? data.slice(-1)[0].lte.RSRPCurrent : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].lte.RSRPCurrent} <span className="unit">dBm</span>
+                </>
+                ) : ''}
+              </dd>
               <dt>Best:</dt>
-              <dd>{data.length ? data.map(plot => plot.lte.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.lte.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140)} <span className="unit">dBm</span>
+                </>
+                )  : ''}
+              </dd>
             </dl>
             <h3>SNR</h3>
             <dl>
               <dt>Current:</dt>
-              <dd>{data.length ? data.slice(-1)[0].lte.SNRCurrent : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].lte.SNRCurrent} <span className="unit">dB</span>
+                </>
+                ) : ''}
+              </dd>
               <dt>Best:</dt>
-              <dd>{data.length ? data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -5) : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -5)} <span className="unit">dB</span>
+                </>
+                 ) : ''}
+              </dd>
             </dl>
           </div>
           <div className="nr">
-            <h2>NR</h2>
+            <h2>5G NR</h2>
             <h3>Band {data.length ? data.slice(-1)[0].nr.Band : 'N/A'}</h3>
             <h3>RSRP</h3>
             <dl>
               <dt>Current:</dt>
-              <dd>{data.length ? data.slice(-1)[0].nr.RSRPCurrent : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].nr.RSRPCurrent} <span className="unit">dBm</span>
+                </>
+                 ) : ''}
+              </dd>
               <dt>Best:</dt>
-              <dd>{data.length ? data.map(plot => plot.nr.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.nr.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140)} <span className="unit">dBm</span>
+                </>
+                 ) : ''}
+              </dd>
             </dl>
             <h3>SNR</h3>
             <dl>
               <dt>Current:</dt>
-              <dd>{data.length ? data.slice(-1)[0].nr.SNRCurrent : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].nr.SNRCurrent} <span className="unit">dB</span>
+                </>
+                 ) : ''}
+              </dd>
               <dt>Best:</dt>
-              <dd>{data.length ? data.map(plot => plot.nr.SNRCurrent).reduce((best, val) => val > best ? val : best, -5) : ''}</dd>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.nr.SNRCurrent).reduce((best, val) => val > best ? val : best, -5)} <span className="unit">dB</span>
+                </>
+                 ) : ''}
+              </dd>
             </dl>
           </div>
         </div>

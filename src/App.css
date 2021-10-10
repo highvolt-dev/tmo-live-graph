@@ -14,21 +14,69 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  margin-bottom: 1rem;
 }
+.App-header h1 {
+  margin: 0 0 0.5rem 0;
+}
+@media( min-width: 768px ) {
+  .App-header h1 {
+    margin: 0 0 1rem 0;
+  }
+}
+@media( min-width: 1024px ) {
+  .App-header h1 {
+    margin: 0 0 2rem 0;
+  }
+}
+.App-header h2 {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-top: 0;
+}
+.App-header h3 {
+  margin-bottom: 0;
+}
+
 .App-header .summary {
-  font-size: 40%;
+  font-size: 80%;
   display: flex;
 }
-.App-header .lte {
-  margin-right: 1em;
+@media( min-width: 768px ) {
+  .App-header .summary {
+    font-size: 60%;
+  }
 }
+@media( min-width: 1200px ) {
+  .App-header .summary {
+    font-size: 50%;
+  }
+}
+.App-header .lte,
 .App-header .nr {
-  margin-left: 1em;
+  background-color: rgba(255,255,255,0.1);
+  padding: 1rem;
+}
+.App-header .lte {
+  margin-left: 2rem;
+  margin-right: 1rem;
+}
+.App-header .lte h2 {
+  color: #a65ef3;
+}
+
+.App-header .nr {
+  margin-left: 1rem;
+  margin-right: 2em;
+}
+.App-header .nr h2 {
+  color: #6668eb;
 }
 dl {
   display: flex;
   flex-wrap: wrap;
   text-align: right;
+  margin-top: 0.25rem;
 }
 dl dt {
   width: 40%;
@@ -38,7 +86,84 @@ dl dd {
   width: auto;
   flex-shrink: 1;
 }
+.unit {
+  display: none;
+  color: #aaa;
+  font-size: 80%;
+  font-style: italic;
+}
+@media (min-width: 768px) {
+  .unit {
+    display: inline;
+  }
+}
+/* LTE SNR MIN */
+.recharts-reference-line:nth-child(10) text {
+  transform: translate(-50px, -10px);
+}
+/* LTE SNR MAX */
+.recharts-reference-line:nth-child(11) text {
+  transform: translate(-50px, 10px);
+}
+/* LTE RSRP MIN */
+.recharts-reference-line:nth-child(12) text {
+  transform: translate(-100px, -10px);
+}
+/* LTE RSRP MAX */
+.recharts-reference-line:nth-child(13) text {
+  transform: translate(-100px, 10px);
+}
+/* NR SNR MIN */
+.recharts-reference-line:nth-child(14) text {
+  transform: translate(50px, -10px);
+}
+/* NR SNR MAX */
+.recharts-reference-line:nth-child(15) text {
+  transform: translate(50px, 10px);
+}
+/* NR RSRP MIN */
+.recharts-reference-line:nth-child(16) text {
+  transform: translate(100px, -10px);
+}
+/* NR RSRP MAX */
+.recharts-reference-line:nth-child(17) text {
+  transform: translate(100px, 10px);
+}
 
+@media( min-width: 768px) {
+  /* LTE SNR MIN */
+  .recharts-reference-line:nth-child(10) text {
+    transform: translate(-100px, -10px);
+  }
+  /* LTE SNR MAX */
+  .recharts-reference-line:nth-child(11) text {
+    transform: translate(-100px, 10px);
+  }
+  /* LTE RSRP MIN */
+  .recharts-reference-line:nth-child(12) text {
+    transform: translate(-200px, -10px);
+  }
+  /* LTE RSRP MAX */
+  .recharts-reference-line:nth-child(13) text {
+    transform: translate(-200px, 10px);
+  }
+  /* NR SNR MIN */
+  .recharts-reference-line:nth-child(14) text {
+    transform: translate(100px, -10px);
+  }
+  /* NR SNR MAX */
+  .recharts-reference-line:nth-child(15) text {
+    transform: translate(100px, 10px);
+  }
+  /* NR RSRP MIN */
+  .recharts-reference-line:nth-child(16) text {
+    transform: translate(200px, -10px);
+  }
+  /* NR RSRP MAX */
+  .recharts-reference-line:nth-child(17) text {
+    transform: translate(200px, 10px);
+  }
+}
 .App-body {
   background-color: #282c34;
   display: flex;
