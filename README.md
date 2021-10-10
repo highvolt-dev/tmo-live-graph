@@ -31,27 +31,27 @@ This project has not been prepared to handle proxying in a production-ready rele
 
 ### 4G LTE
 - Connected band
-- Current RSRP
-- Best RSRP
-- Current SNR
-- Best SNR
+- Current/Best RSRP
+- Current/Best SNR
+- Current/Best RSRQ
 
 ### 5G NR
 - Connected band
-- Current RSRP
-- Best RSRP
-- Current SNR
-- Best SNR
+- Current/Best RSRP
+- Current/Best SNR
+- Current/Best RSRQ
 
 ## Visualized Statistics
 
 ### 4G LTE
-- RSRP value with reference lines for Min/Max RSRP
-- SNR value with reference lines for Min/Max RSRP
+- RSRP value with Min/Max reference lines
+- SNR value with Min/Max reference lines
+- RSRQ value with Min/Max reference lines
 
 ### 5G NR
-- RSRP value with reference lines for Min/Max RSRP
-- SNR value with reference lines for Min/Max RSRP
+- RSRP value with Min/Max reference lines
+- SNR value with Min/Max reference lines
+- RSRQ value with Min/Max reference lines
 
 ## Screenshots
 
