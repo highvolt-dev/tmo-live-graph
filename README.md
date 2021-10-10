@@ -2,20 +2,18 @@
 
 A simpe react app that plots a live view of the T-Mobile Home Internet Nokia 5G Gateway signal stats, helpful for optimizing signal.
 
-## Screenshots
+This project should be considered to be in a pre-release state.
 
-### Desktop
 <img src="./screenshot-desktop.png" alt="desktop screenshot of tmo-live-graph" width="768">
 
-### Tablet
-<img src="./screenshot-tablet.png" alt="tablet screenshot of tmo-live-graph" width="480">
-
-### Mobile
-<img src="./screenshot-mobile.png" alt="mobile screenshot of tmo-live-graph" width="480">
 
 ## Getting Started
 
-This project should be considered to be in a pre-release state.
+Ensure that you have nodejs installed on your machine, then run:
+
+```
+npm install
+```
 
 In order to properly fetch API responses from the Nokia Gateway in-browser, they must be proxied to work around CORS restrictions.
 
@@ -54,6 +52,17 @@ This project has not been prepared to handle proxying in a production-ready rele
 ### 5G NR
 - RSRP value with reference lines for Min/Max RSRP
 - SNR value with reference lines for Min/Max RSRP
+
+## Screenshots
+
+### Desktop
+<img src="./screenshot-desktop.png" alt="desktop screenshot of tmo-live-graph" width="768">
+
+### Tablet
+<img src="./screenshot-tablet.png" alt="tablet screenshot of tmo-live-graph" width="480">
+
+### Mobile
+<img src="./screenshot-mobile.png" alt="mobile screenshot of tmo-live-graph" width="480">
 
 ## Available Scripts
 
