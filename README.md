@@ -2,6 +2,8 @@
 
 A simpe react app that plots a live view of the T-Mobile Home Internet Nokia 5G Gateway signal stats, helpful for optimizing signal.
 
+<img src="./screenshot.png" alt="screenshot of tmo-live-graph" width="768">
+
 ## Getting Started
 
 This project should be considered to be in a pre-release state.
