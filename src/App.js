@@ -26,8 +26,8 @@ function useInterval(callback, delay) {
 function App() {
   const [data, setData] = useState([]);
 
-  const renderLineChart = (
-    <ComposedChart width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+  const renderComposedChart = (
+    <ComposedChart id="composed-chart" width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
       <CartesianGrid stroke="#ccc" strokeDasharray=" 5 5" />
       <Area yAxisId="left"  type="monotone" dataKey="lte.SNRCurrent" stroke="red" fillOpacity={0.5} fill="red" />
 
@@ -49,6 +49,24 @@ function App() {
       <ReferenceLine yAxisId="left" y={data.length ? data.map(plot => plot.nr.SNRCurrent).reduce((min, val) => val < min ? val : min, 40) : ''} label="Min NR SNR" stroke="blue" strokeDasharray="3 3" isFront />
       <ReferenceLine yAxisId="right" y={data.length ? data.map(plot => plot.nr.RSRPCurrent).reduce((max, val) => val > max ? val : max, -140) : ''} label="Max NR RSRP" stroke="aqua" strokeDasharray="3 3" isFront />
       <ReferenceLine yAxisId="right" y={data.length ? data.map(plot => plot.nr.RSRPCurrent).reduce((min, val) => val < min ? val : min, -44) : ''} label="Min NR RSRP" stroke="aqua" strokeDasharray="3 3" isFront />
+      <Tooltip />
+    </ComposedChart>
+  );
+
+  const renderRSRQChart = (
+    <ComposedChart id="rsrq-chart" width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+      <CartesianGrid stroke="#ccc" strokeDasharray=" 5 5" />
+      <Area type="monotone" dataKey="lte.RSRQCurrent" stroke="red" fillOpacity={0.5} fill="red" />
+
+      <Area type="monotone" dataKey="nr.RSRQCurrent" stroke="blue"  fillOpacity={0.5} fill="blue" />
+
+      <XAxis dataKey="time" />
+      <YAxis label="RSRQ" domain={[-19.5, -3]} />
+
+      <ReferenceLine y={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((max, val) => val > max ? val : max, -19.5) : ''} label="Max LTE RSRQ" stroke="red" strokeDasharray="3 3" isFront />
+      <ReferenceLine y={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((min, val) => val < min ? val : min, -3) : ''} label="Min LTE RSRQ" stroke="red" strokeDasharray="3 3" isFront />
+      <ReferenceLine y={data.length ? data.map(plot => plot.nr.RSRQCurrent).reduce((max, val) => val > max ? val : max, -19.5) : ''} label="Max NR RSRQ" stroke="blue" strokeDasharray="3 3" isFront />
+      <ReferenceLine y={data.length ? data.map(plot => plot.nr.RSRQCurrent).reduce((min, val) => val < min ? val : min, -3) : ''} label="Min NR RSRQ" stroke="blue" strokeDasharray="3 3" isFront />
       <Tooltip />
     </ComposedChart>
   );
@@ -107,7 +125,7 @@ function App() {
               <dd>
                 {data.length ? (
                 <>
-                {data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -5)} <span className="unit">dB</span>
+                {data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
                 </>
                  ) : ''}
               </dd>
@@ -158,7 +176,58 @@ function App() {
         </div>
       </header>
       <main className="App-body">
-        {renderLineChart}
+        {renderComposedChart}
+      </main>
+      <header className="App-header">
+        <div className="summary">
+          <div className="lte">
+            <h2>4G LTE</h2>
+            <h3>RSRQ</h3>
+            <dl>
+              <dt>Current:</dt>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].lte.RSRQCurrent} <span className="unit">dB</span>
+                </>
+                ) : ''}
+              </dd>
+              <dt>Best:</dt>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.lte.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
+                </>
+                 ) : ''}
+              </dd>
+            </dl>
+          </div>
+          <div className="nr">
+            <h2>5G NR</h2>
+            <h3>RSRQ</h3>
+            <dl>
+              <dt>Current:</dt>
+              <dd>
+                {data.length ? (
+                <>
+                {data.slice(-1)[0].nr.RSRQCurrent} <span className="unit">dB</span>
+                </>
+                ) : ''}
+              </dd>
+              <dt>Best:</dt>
+              <dd>
+                {data.length ? (
+                <>
+                {data.map(plot => plot.nr.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
+                </>
+                 ) : ''}
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </header>
+      <main className="App-body">
+        {renderRSRQChart}
       </main>
     </div>
   );
