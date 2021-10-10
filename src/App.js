@@ -38,8 +38,8 @@ function App() {
       <Line yAxisId="right" type="monotone" dataKey="nr.RSRPCurrent" stroke="aqua" />
 
       <XAxis dataKey="time" />
-      <YAxis yAxisId="left" label="SNR" domain={[-5, 40]} />
-      <YAxis yAxisId="right" label="RSRP" domain={[-140, -44]} orientation='right' />
+      <YAxis yAxisId="left" label="SNR" unit="dB" domain={[-5, 40]} tickCount={10} />
+      <YAxis yAxisId="right" label="RSRP" unit="dBm" domain={[-140, -44]} tickCount={10} orientation='right' />
 
       <ReferenceLine yAxisId="left" y={data.length ? data.map(plot => plot.lte.SNRCurrent).reduce((max, val) => val > max ? val : max, -5) : ''} label="Max LTE SNR" stroke="red" strokeDasharray="3 3" isFront />
       <ReferenceLine yAxisId="left" y={data.length ? data.map(plot => plot.lte.SNRCurrent).reduce((min, val) => val < min ? val : min, 40) : ''} label="Min LTE SNR" stroke="red" strokeDasharray="3 3" isFront />
@@ -61,7 +61,7 @@ function App() {
       <Area type="monotone" dataKey="nr.RSRQCurrent" stroke="blue"  fillOpacity={0.5} fill="blue" />
 
       <XAxis dataKey="time" />
-      <YAxis label="RSRQ" domain={[-19.5, -3]} />
+      <YAxis label="RSRQ" unit="dB" domain={[-19.5, -3]} tickCount={9} />
 
       <ReferenceLine y={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((max, val) => val > max ? val : max, -19.5) : ''} label="Max LTE RSRQ" stroke="red" strokeDasharray="3 3" isFront />
       <ReferenceLine y={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((min, val) => val < min ? val : min, -3) : ''} label="Min LTE RSRQ" stroke="red" strokeDasharray="3 3" isFront />
