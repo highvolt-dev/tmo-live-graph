@@ -79,6 +79,7 @@ dl {
   margin-top: 0.25rem;
 }
 dl dt {
+  flex-basis: 50%;
   width: 40%;
   font-weight: bold;
 }

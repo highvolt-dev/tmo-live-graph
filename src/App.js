@@ -82,7 +82,17 @@ function App() {
     const date = new Date();
     const primary = {...json['cell_LTE_stats_cfg'][0]['stat']};
     const secondary = {...json['cell_5G_stats_cfg'][0]['stat']};
-    setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary}]);
+    if (primary['RSRPStrengthIndexCurrent'] === 0) {
+      primary['SNRCurrent'] = null;
+      primary['RSRPCurrent'] = null;
+      primary['RSRQCurrent'] = null;
+    }
+    if (secondary['RSRPStrengthIndexCurrent'] === 0) {
+      secondary['SNRCurrent'] = null;
+      secondary['RSRPCurrent'] = null;
+      secondary['RSRQCurrent'] = null;
+    }
+    setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca: { ...json['cell_CA_stats_cfg'][0] }}]);
   }, 2000);
 
   return (
@@ -96,9 +106,10 @@ function App() {
             main={true}
             band={data.length ? data.slice(-1)[0].lte.Band : 'N/A'}
             RSRPCurrent={data.length ? data.slice(-1)[0].lte.RSRPCurrent : null}
-            RSRPBest={data.length ? data.map(plot => plot.lte.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : null}
+            RSRPBest={data.length ? data.map(plot => plot.lte.RSRPCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -140) : null}
             SNRCurrent={data.length ? data.slice(-1)[0].lte.SNRCurrent : null}
-            SNRBest={data.length ? data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+            SNRBest={data.length ? data.map(plot => plot.lte.SNRCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -19.5) : null}
+            CA={data.length ? data.slice(-1)[0].ca /* "ca":{ "X_ALU_COM_DLCarrierAggregationNumberOfEntries":1, "X_ALU_COM_ULCarrierAggregationNumberOfEntries":0 ,"1":{"PhysicalCellID":49, "ScellBand":"B2", "ScellChannel":675 }} }]} */ : null }
           />
           <Card
             signal="nr"
@@ -106,9 +117,9 @@ function App() {
             main={true}
             band={data.length ? data.slice(-1)[0].nr.Band : 'N/A'}
             RSRPCurrent={data.length ? data.slice(-1)[0].nr.RSRPCurrent : null}
-            RSRPBest={data.length ? data.map(plot => plot.nr.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : null}
+            RSRPBest={data.length ? data.map(plot => plot.nr.RSRPCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -140) : null}
             SNRCurrent={data.length ? data.slice(-1)[0].nr.SNRCurrent : null}
-            SNRBest={data.length ? data.map(plot => plot.nr.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+            SNRBest={data.length ? data.map(plot => plot.nr.SNRCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -19.5) : null}
           />
         </div>
       </header>
@@ -122,14 +133,14 @@ function App() {
             title="4G LTE"
             main={false}
             RSRQCurrent={data.length ? data.slice(-1)[0].lte.RSRQCurrent : null}
-            RSRQBest={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+            RSRQBest={data.length ? data.map(plot => plot.lte.RSRQCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -19.5) : null}
           />
           <Card
             signal="nr"
             title="5G NR"
             main={false}
             RSRQCurrent={data.length ? data.slice(-1)[0].nr.RSRQCurrent : null}
-            RSRQBest={data.length ? data.map(plot => plot.nr.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+            RSRQBest={data.length ? data.map(plot => plot.nr.RSRQCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -19.5) : null}
           />
         </div>
       </header>

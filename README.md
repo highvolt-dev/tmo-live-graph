@@ -31,6 +31,7 @@ This project has not been prepared to handle proxying in a production-ready rele
 
 ### 4G LTE
 - Connected band
+- Carrier Aggregation (Download, Upload, Bands)
 - Current/Best RSRP
 - Current/Best SNR
 - Current/Best RSRQ
