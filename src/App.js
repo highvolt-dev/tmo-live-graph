@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {  Area, ComposedChart, Line, CartesianGrid, ReferenceLine, XAxis, YAxis, Tooltip } from 'recharts';
+import Card from './components/card';
 import './App.css';
 
 // https://stackoverflow.com/a/62798382
@@ -89,90 +90,26 @@ function App() {
       <header className="App-header">
         <h1>Tmo Live Graph</h1>
         <div className="summary">
-          <div className="lte">
-            <h2>4G LTE</h2>
-            <h3>Band {data.length ? data.slice(-1)[0].lte.Band : 'N/A'}</h3>
-            <h3>RSRP</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].lte.RSRPCurrent} <span className="unit">dBm</span>
-                </>
-                ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.lte.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140)} <span className="unit">dBm</span>
-                </>
-                )  : ''}
-              </dd>
-            </dl>
-            <h3>SNR</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].lte.SNRCurrent} <span className="unit">dB</span>
-                </>
-                ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
-                </>
-                 ) : ''}
-              </dd>
-            </dl>
-          </div>
-          <div className="nr">
-            <h2>5G NR</h2>
-            <h3>Band {data.length ? data.slice(-1)[0].nr.Band : 'N/A'}</h3>
-            <h3>RSRP</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].nr.RSRPCurrent} <span className="unit">dBm</span>
-                </>
-                 ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.nr.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140)} <span className="unit">dBm</span>
-                </>
-                 ) : ''}
-              </dd>
-            </dl>
-            <h3>SNR</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].nr.SNRCurrent} <span className="unit">dB</span>
-                </>
-                 ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.nr.SNRCurrent).reduce((best, val) => val > best ? val : best, -5)} <span className="unit">dB</span>
-                </>
-                 ) : ''}
-              </dd>
-            </dl>
-          </div>
+          <Card
+            signal="lte"
+            title="4G LTE"
+            main={true}
+            band={data.length ? data.slice(-1)[0].lte.Band : 'N/A'}
+            RSRPCurrent={data.length ? data.slice(-1)[0].lte.RSRPCurrent : null}
+            RSRPBest={data.length ? data.map(plot => plot.lte.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : null}
+            SNRCurrent={data.length ? data.slice(-1)[0].lte.SNRCurrent : null}
+            SNRBest={data.length ? data.map(plot => plot.lte.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+          />
+          <Card
+            signal="nr"
+            title="5G NR"
+            main={true}
+            band={data.length ? data.slice(-1)[0].nr.Band : 'N/A'}
+            RSRPCurrent={data.length ? data.slice(-1)[0].nr.RSRPCurrent : null}
+            RSRPBest={data.length ? data.map(plot => plot.nr.RSRPCurrent).reduce((best, val) => val > best ? val : best, -140) : null}
+            SNRCurrent={data.length ? data.slice(-1)[0].nr.SNRCurrent : null}
+            SNRBest={data.length ? data.map(plot => plot.nr.SNRCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+          />
         </div>
       </header>
       <main className="App-body">
@@ -180,50 +117,20 @@ function App() {
       </main>
       <header className="App-header">
         <div className="summary">
-          <div className="lte">
-            <h2>4G LTE</h2>
-            <h3>RSRQ</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].lte.RSRQCurrent} <span className="unit">dB</span>
-                </>
-                ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.lte.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
-                </>
-                 ) : ''}
-              </dd>
-            </dl>
-          </div>
-          <div className="nr">
-            <h2>5G NR</h2>
-            <h3>RSRQ</h3>
-            <dl>
-              <dt>Current:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.slice(-1)[0].nr.RSRQCurrent} <span className="unit">dB</span>
-                </>
-                ) : ''}
-              </dd>
-              <dt>Best:</dt>
-              <dd>
-                {data.length ? (
-                <>
-                {data.map(plot => plot.nr.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5)} <span className="unit">dB</span>
-                </>
-                 ) : ''}
-              </dd>
-            </dl>
-          </div>
+          <Card
+            signal="lte"
+            title="4G LTE"
+            main={false}
+            RSRQCurrent={data.length ? data.slice(-1)[0].lte.RSRQCurrent : null}
+            RSRQBest={data.length ? data.map(plot => plot.lte.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+          />
+          <Card
+            signal="nr"
+            title="5G NR"
+            main={false}
+            RSRQCurrent={data.length ? data.slice(-1)[0].nr.RSRQCurrent : null}
+            RSRQBest={data.length ? data.map(plot => plot.nr.RSRQCurrent).reduce((best, val) => val > best ? val : best, -19.5) : null}
+          />
         </div>
       </header>
       <main className="App-body">
