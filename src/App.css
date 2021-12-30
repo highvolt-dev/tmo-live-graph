@@ -29,6 +29,20 @@
     margin: 0 0 2rem 0;
   }
 }
+.App-header a.login {
+  text-decoration: underline;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+.App-header .login-state {
+  margin-bottom: 1rem;
+}
+.App-header label {
+  font-size: 75%;
+}
+.App-header a.login:hover {
+  text-decoration: none;
+}
 .App-header h2 {
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #ccc;
@@ -37,7 +51,16 @@
 .App-header h3 {
   margin-bottom: 0;
 }
-
+.App-header form {
+  margin-bottom: 1rem;
+}
+.App-header label, .App-header input {
+  margin-right: 1ch;
+}
+.App-header .ext-link {
+  color: #fff;
+  margin-bottom: 1rem;
+}
 .App-header .summary {
   font-size: 80%;
   display: flex;

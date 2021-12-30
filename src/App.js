@@ -26,6 +26,9 @@ function useInterval(callback, delay) {
 
 function App() {
   const [data, setData] = useState([]);
+  const [login, setLogin] = useState({username: 'admin', password: '', error: ''});
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [cellData, setCellData] = useState({});
 
   const renderComposedChart = (
     <ComposedChart id="composed-chart" width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -95,10 +98,84 @@ function App() {
     setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca: { ...json['cell_CA_stats_cfg'][0] }}]);
   }, 2000);
 
+  const doLogin = async e => {
+    if (loggedIn) return;
+
+    e.target.disabled = true;
+
+    const body = new URLSearchParams({
+      name: login.username,
+      pswd: login.password
+    }).toString();
+
+    const res = await fetch('/login_app.cgi', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body
+    });
+    const json = await res.json();
+    if (json.result !== 0) {
+      setField('error', 'Problem logging in');
+    } else {
+      setField('error', '');
+      setLoggedIn(true);
+      getCellInfo();
+    }
+    e.target.disabled = false;
+  };
+
+  const getCellInfo = async () => {
+    const res = await fetch('/cell_status_app.cgi', {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    const json = await res.json();
+    setCellData({...json, plmn: `${json.cell_stat_lte[0].MCC}-${json.cell_stat_lte[0].MNC}`});
+  };
+
+  const setField = (prop, value) => { setLogin({...login, [prop]: value}) };
+
+  const plmn = {
+    '310-260': 'T-Mobile USA',
+    '311-490': 'Sprint',
+    '312-250': 'Sprint Keep Site'
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Tmo Live Graph</h1>
+        {loggedIn ? <span className="login-state">Logged In</span> : <>
+          <form onSubmit={doLogin}>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value={login.username} onChange={(e) => {setField('username', e.target.value)}} />
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" value={login.password} onChange={(e) => {setField('password', e.target.value)}} />
+            <button type="submit" className="login" onClick={doLogin}>Log In</button>
+            {login.error ? <p>{login.error}</p> : ''}
+          </form>
+        </>}
+          {'cell_stat_generic' in cellData ?
+          <>
+          <dl>
+            <dt>Connection Type</dt>
+            <dd>{cellData.cell_stat_generic[0].CurrentAccessTechnology}</dd>
+            <dt>Operator (PLMN/MCC-MNC)</dt>
+            <dd>{cellData.plmn} ({cellData.plmn in plmn ? plmn[cellData.plmn] : 'Unknown'})</dd>
+            <dt>eNB ID (Cell Site)</dt>
+            <dd>{cellData.cell_stat_lte[0].eNBID}</dd>
+            <dt>Cell ID (Cell Site)</dt>
+            <dd>{cellData.cell_stat_lte[0].Cellid}</dd>
+          </dl>
+          <a className="ext-link" href={`https://www.cellmapper.net/map?MCC=${cellData.cell_stat_lte[0].MCC}&MNC=${cellData.cell_stat_lte[0].MNC}&type=LTE&latitude=44.967242999999996&longitude=-103.771556&zoom=5&showTowers=true&showTowerLabels=true&clusterEnabled=true&tilesEnabled=true&showOrphans=false&showNoFrequencyOnly=false&showFrequencyOnly=false&showBandwidthOnly=false&DateFilterType=Last&showHex=false&showVerifiedOnly=false&showUnverifiedOnly=false&showLTECAOnly=false&showENDCOnly=false&showBand=0&showSectorColours=true&mapType=roadmap`} target="_blank" rel="noindex nofollow noopener noreferrer">Cellmapper link</a>
+          <p>In left menu, expand "Tower Search" and copy and paste the eNB ID for your cell site ({cellData.cell_stat_lte[0].eNBID})</p>
+          </>
+          : ''}
         <div className="summary">
           <Card
             signal="lte"
