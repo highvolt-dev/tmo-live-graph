@@ -27,6 +27,16 @@ This will start the project at http://localhost:3000/
 
 This project has not been prepared to handle proxying in a production-ready release mode.
 
+## Cell Info
+
+This section requires authentication with admin username and password - login form appears at top of app.
+
+- Connection Type
+- Operator (PLMN/MCC-MNC)
+- eNB ID (Cell Site)
+- Cell ID
+- Link to cellmapper.net for given operator. Zoomed to geographic center of US. To respect cellmapper.net, you must manually copy and paste the enNB ID to find your cell site.
+
 ## Summarized Statistics
 
 ### 4G LTE
