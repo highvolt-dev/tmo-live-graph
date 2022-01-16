@@ -13,9 +13,9 @@ function Card(props) {
             <h3>Carrier Aggregation</h3>
             <dl>
               <dt>Download</dt>
-              <dd>{props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries ? `+{props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries}` : 'None'}</dd>
+              <dd>{props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries ? `+${props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries}` : 'None'}</dd>
               <dt>Upload</dt>
-              <dd>{props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries ? `+{props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries}` : 'None'}</dd>
+              <dd>{props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries ? `+${props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries}` : 'None'}</dd>
               {Object.keys(props.CA.ca).filter(key => props.CA.ca.hasOwnProperty(key) && !isNaN(key)).map(key => <>
                 <dt>CA Add({key})</dt>
                 <dd>Band {props.CA.ca[key]['ScellBand']}</dd>
