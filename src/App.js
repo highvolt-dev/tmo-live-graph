@@ -180,10 +180,10 @@ function App() {
         <h1>Tmo Live Graph</h1>
         {loggedIn ? <span className="login-state">Logged In</span> : <>
           <form onSubmit={doLogin}>
-            <label for="username">Username</label>
+            <label htmlFor="username">Username</label>
             <input type="text" id="username" name="username" value={login.username} onChange={(e) => {setField('username', e.target.value)}} />
 
-            <label for="password">Password</label>
+            <label htmlFor="password">Password</label>
             <input type="password" name="password" id="password" value={login.password} onChange={(e) => {setField('password', e.target.value)}} />
             <button type="submit" className="login" onClick={doLogin}>Log In</button>
             {login.error ? <p>{login.error}</p> : ''}
