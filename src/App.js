@@ -25,7 +25,7 @@ function useInterval(callback, delay) {
 }
 
 function App() {
-  const [model, setModel] = useState(null);
+  const [model, setModel] = useState('');
   const [data, setData] = useState([]);
   const [login, setLogin] = useState({username: 'admin', password: '', error: ''});
   const [loggedIn, setLoggedIn] = useState(false);
@@ -281,10 +281,10 @@ function App() {
           {model ?
           <>Selected: {model} <button onClick={(e) => {setModel('')}}>Change Selection</button></>
           :
-          <select name="model" onChange={(e) => {setModel(e.target.value)}}>
+          <select name="model" value={model} onChange={(e) => {setModel(e.target.value)}}>
             <option value="">Select a Model</option>
-            <option value="NOK5G21" selected={model === "NOK5G21"}>Nokia (Silver Cylinder)</option>
-            <option value="ARCKVD21" selected={model === "ARCKVD21"}>Arcadyan (Black Cube)</option>
+            <option value="NOK5G21">Nokia (Silver Cylinder)</option>
+            <option value="ARCKVD21">Arcadyan (Black Cube)</option>
           </select>
           }
         </section>
