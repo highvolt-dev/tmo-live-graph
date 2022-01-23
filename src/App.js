@@ -82,6 +82,35 @@ function App() {
       }
     });
     const json = await res.json();
+    let ca = json['cell_CA_stats_cfg'][0];
+    // Older firmware
+    if ('ca' in ca) {
+      ca = ca.ca;
+      const numericKeys = Object.keys(ca).filter(key => ca.hasOwnProperty(key) && !isNaN(key));
+      ca.carriers = {
+        unspecified: numericKeys.map(key => ca[key])
+      };
+      ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+      ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+      for (const key of numericKeys) {
+        delete ca[key];
+      }
+      delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+      delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+    } else {
+      ca.carriers = {};
+      ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+      ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+      for (const group of ['ca4GDL', 'ca4GUL']) {
+        const numericKeys = Object.keys(ca[group]).filter(key => ca[group].hasOwnProperty(key) && !isNaN(key));
+        ca.carriers[group === 'ca4GDL' ? 'download' : 'upload'] = numericKeys.map(key => ca[group][key]);
+      }
+      delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+      delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+      delete ca.ca4GDL;
+      delete ca.ca4GUL;
+    }
+
     const date = new Date();
     const primary = {...json['cell_LTE_stats_cfg'][0]['stat']};
     const secondary = {...json['cell_5G_stats_cfg'][0]['stat']};
@@ -95,8 +124,8 @@ function App() {
       secondary['RSRPCurrent'] = null;
       secondary['RSRQCurrent'] = null;
     }
-    setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca: { ...json['cell_CA_stats_cfg'][0] }}]);
-  }, 2000);
+    setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca }]);
+  }, 5000);
 
   const doLogin = async e => {
     if (loggedIn) return;

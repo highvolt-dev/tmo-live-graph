@@ -13,13 +13,27 @@ function Card(props) {
             <h3>Carrier Aggregation</h3>
             <dl>
               <dt>Download</dt>
-              <dd>{props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries ? `+{props.CA.ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries}` : 'None'}</dd>
-              <dt>Upload</dt>
-              <dd>{props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries ? `+{props.CA.ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries}` : 'None'}</dd>
-              {Object.keys(props.CA.ca).filter(key => props.CA.ca.hasOwnProperty(key) && !isNaN(key)).map(key => <>
-                <dt>CA Add({key})</dt>
-                <dd>Band {props.CA.ca[key]['ScellBand']}</dd>
+              <dd>{props.CA.download ? `+${props.CA.download}` : 'None'}</dd>
+              {props.CA.carriers.hasOwnProperty('download') ? <>
+              {props.CA.carriers.download.map((carrier, i) => <>
+                <dt>DL CA Add({i + 1})</dt>
+                <dd>Band {carrier['ScellBand']}</dd>
               </> )}
+              </> : ''}
+              <dt>Upload</dt>
+              <dd>{props.CA.upload ? `+${props.CA.upload}` : 'None'}</dd>
+              {props.CA.carriers.hasOwnProperty('upload') ? <>
+              {props.CA.carriers.upload.map((carrier, i) => <>
+                <dt>UL CA Add({i + 1})</dt>
+                <dd>Band {carrier['ScellBand']}</dd>
+              </> )}
+              </> : ''}
+              {props.CA.carriers.hasOwnProperty('unspecified') ? <>
+              {props.CA.carriers.unspecified.map((carrier, i) => <>
+                <dt>CA Add({i + 1})</dt>
+                <dd>Band {carrier['ScellBand']}</dd>
+              </> )}
+              </> : ''}
             </dl>
             </>
           ) : props.signal === 'lte' ? 'NO CA' : ''}
