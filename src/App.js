@@ -25,6 +25,7 @@ function useInterval(callback, delay) {
 }
 
 function App() {
+  const [model, setModel] = useState(null);
   const [data, setData] = useState([]);
   const [login, setLogin] = useState({username: 'admin', password: '', error: ''});
   const [loggedIn, setLoggedIn] = useState(false);
@@ -76,94 +77,191 @@ function App() {
   );
 
   useInterval(async () => {
-    const res = await fetch('/fastmile_radio_status_web_app.cgi', {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    const json = await res.json();
-    let ca = json['cell_CA_stats_cfg'][0];
-    // Older firmware
-    if ('ca' in ca) {
-      ca = ca.ca;
-      const numericKeys = Object.keys(ca).filter(key => ca.hasOwnProperty(key) && !isNaN(key));
-      ca.carriers = {
-        unspecified: numericKeys.map(key => ca[key])
-      };
-      ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
-      ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
-      for (const key of numericKeys) {
-        delete ca[key];
-      }
-      delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
-      delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
-    } else {
-      ca.carriers = {};
-      ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
-      ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
-      for (const group of ['ca4GDL', 'ca4GUL']) {
-        const numericKeys = Object.keys(ca[group]).filter(key => ca[group].hasOwnProperty(key) && !isNaN(key));
-        ca.carriers[group === 'ca4GDL' ? 'download' : 'upload'] = numericKeys.map(key => ca[group][key]);
-      }
-      delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
-      delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
-      delete ca.ca4GDL;
-      delete ca.ca4GUL;
-    }
+    if (!model) return;
+    if (model === 'ARCKVD21') {
+      const res = await fetch('/TMI/v1/gateway?get=all', {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      const json = await res.json();
+      const date = new Date();
+      const primary = {...json.signal['4g']};
+      const secondary = {...json.signal['5g']};
 
-    const date = new Date();
-    const primary = {...json['cell_LTE_stats_cfg'][0]['stat']};
-    const secondary = {...json['cell_5G_stats_cfg'][0]['stat']};
-    if (primary['RSRPStrengthIndexCurrent'] === 0) {
-      primary['SNRCurrent'] = null;
-      primary['RSRPCurrent'] = null;
-      primary['RSRQCurrent'] = null;
+      const lte = {
+        "PhysicalCellID": primary.cid,
+        "RSSICurrent": primary.rssi,
+        "SNRCurrent": primary.sinr,
+        "RSRPCurrent": primary.rsrp,
+        "RSRPStrengthIndexCurrent": primary.bars,
+        "RSRQCurrent": primary.rsrq,
+        "DownlinkEarfcn": null, // Only available in authenticated telemetry endpoint
+        "SignalStrengthLevel":0,
+        "Band": primary.bands.length ? primary.bands[0].toUpperCase() : null
+      };
+
+      const nr = {
+        "PhysicalCellID": secondary.cid,
+        "SNRCurrent": secondary.sinr,
+        "RSRPCurrent": secondary.rsrp,
+        "RSRPStrengthIndexCurrent": secondary.bars,
+        "RSRQCurrent": secondary.rsrq,
+        "Downlink_NR_ARFCN": null, // Only available in authenticated telemetry endpoint
+        "SignalStrengthLevel":0,
+        "Band": primary.bands.length ? primary.bands[0] : null
+      };
+
+      if (primary['RSRPStrengthIndexCurrent'] === 0) {
+        primary['SNRCurrent'] = null;
+        primary['RSRPCurrent'] = null;
+        primary['RSRQCurrent'] = null;
+      }
+      if (secondary['RSRPStrengthIndexCurrent'] === 0) {
+        secondary['SNRCurrent'] = null;
+        secondary['RSRPCurrent'] = null;
+        secondary['RSRQCurrent'] = null;
+      }
+      setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte, nr, ca: null }]);
+    } else {
+      const res = await fetch('/fastmile_radio_status_web_app.cgi', {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      const json = await res.json();
+      let ca = json['cell_CA_stats_cfg'][0];
+      // Older firmware
+      if ('ca' in ca) {
+        ca = ca.ca;
+        const numericKeys = Object.keys(ca).filter(key => ca.hasOwnProperty(key) && !isNaN(key));
+        ca.carriers = {
+          unspecified: numericKeys.map(key => ca[key])
+        };
+        ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+        ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+        for (const key of numericKeys) {
+          delete ca[key];
+        }
+        delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+        delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+      } else {
+        ca.carriers = {};
+        ca.download = ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+        ca.upload = ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+        for (const group of ['ca4GDL', 'ca4GUL']) {
+          const numericKeys = Object.keys(ca[group]).filter(key => ca[group].hasOwnProperty(key) && !isNaN(key));
+          ca.carriers[group === 'ca4GDL' ? 'download' : 'upload'] = numericKeys.map(key => ca[group][key]);
+        }
+        delete ca.X_ALU_COM_DLCarrierAggregationNumberOfEntries;
+        delete ca.X_ALU_COM_ULCarrierAggregationNumberOfEntries;
+        delete ca.ca4GDL;
+        delete ca.ca4GUL;
+      }
+
+      const date = new Date();
+      const primary = {...json['cell_LTE_stats_cfg'][0]['stat']};
+      const secondary = {...json['cell_5G_stats_cfg'][0]['stat']};
+      if (primary['RSRPStrengthIndexCurrent'] === 0) {
+        primary['SNRCurrent'] = null;
+        primary['RSRPCurrent'] = null;
+        primary['RSRQCurrent'] = null;
+      }
+      if (secondary['RSRPStrengthIndexCurrent'] === 0) {
+        secondary['SNRCurrent'] = null;
+        secondary['RSRPCurrent'] = null;
+        secondary['RSRQCurrent'] = null;
+      }
+      setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca }]);
     }
-    if (secondary['RSRPStrengthIndexCurrent'] === 0) {
-      secondary['SNRCurrent'] = null;
-      secondary['RSRPCurrent'] = null;
-      secondary['RSRQCurrent'] = null;
-    }
-    setData(data => [...data.slice(-24), {date, time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` , lte: primary, nr: secondary, ca }]);
-  }, 5000);
+  }, 2000);
 
   const doLogin = async e => {
+    if (!model) return;
     if (loggedIn) return;
 
     e.target.disabled = true;
 
-    const body = new URLSearchParams({
-      name: login.username,
-      pswd: login.password
-    }).toString();
-
-    const res = await fetch('/login_app.cgi', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body
-    });
-    const json = await res.json();
-    if (json.result !== 0) {
-      setField('error', 'Problem logging in');
+    if (model === 'ARCKVD21') {
+      const res = await fetch('/TMI/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: login.username,
+          password: login.password
+        })
+      });
+      const json = await res.json();
+      if (!json.hasOwnProperty('auth')) {
+        setField('error', 'Problem logging in');
+      } else {
+        setField('error', '');
+        setLoggedIn(true);
+        getCellInfoArcadyan(json.auth.token);
+      }
     } else {
-      setField('error', '');
-      setLoggedIn(true);
-      getCellInfo();
+      const body = new URLSearchParams({
+        name: login.username,
+        pswd: login.password
+      }).toString();
+
+      const res = await fetch('/login_app.cgi', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body
+      });
+      const json = await res.json();
+      if (json.result !== 0) {
+        setField('error', 'Problem logging in');
+      } else {
+        setField('error', '');
+        setLoggedIn(true);
+        getCellInfoNokia();
+      }
     }
     e.target.disabled = false;
   };
 
-  const getCellInfo = async () => {
+  const getCellInfoNokia = async () => {
     const res = await fetch('/cell_status_app.cgi', {
       headers: {
         'Accept': 'application/json'
       }
     });
     const json = await res.json();
-    setCellData({...json, plmn: `${json.cell_stat_lte[0].MCC}-${json.cell_stat_lte[0].MNC}`});
+
+    const data = {
+      AccessTechnology: json.cell_stat_generic[0].CurrentAccessTechnology,
+      eNBID: json.cell_stat_lte[0].eNBID,
+      CellId: json.cell_stat_lte[0].Cellid,
+      MCC: json.cell_stat_lte[0].MCC,
+      MNC: json.cell_stat_lte[0].MNC
+    }
+
+    setCellData({...data, plmn: `${json.cell_stat_lte[0].MCC}-${json.cell_stat_lte[0].MNC}`});
+  };
+
+  const getCellInfoArcadyan = async (token) => {
+    const res = await fetch('/TMI/v1/network/telemetry?get=all', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    const json = await res.json();
+
+    const data = {
+      eNBID: Math.floor(parseInt(json.cell['4g'].ecgi.substring(6), 16) / 256),
+      CellId: json.cell['4g'].sector.cid,
+      MCC: json.cell['4g'].mcc,
+      MNC: json.cell['4g'].mnc
+    };
+
+    setCellData({...data, plmn: `${json.cell['4g'].mcc}-${json.cell['4g'].mnc}`, gps: json.cell.gps});
   };
 
   const setField = (prop, value) => { setLogin({...login, [prop]: value}) };
@@ -178,6 +276,19 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Tmo Live Graph</h1>
+        <section>
+          <h2>Model Selection</h2>
+          {model ?
+          <>Selected: {model} <button onClick={(e) => {setModel('')}}>Change Selection</button></>
+          :
+          <select name="model" onChange={(e) => {setModel(e.target.value)}}>
+            <option value="">Select a Model</option>
+            <option value="NOK5G21" selected={model === "NOK5G21"}>Nokia (Silver Cylinder)</option>
+            <option value="ARCKVD21" selected={model === "ARCKVD21"}>Arcadyan (Black Cube)</option>
+          </select>
+          }
+        </section>
+        {model ? <>
         {loggedIn ? <span className="login-state">Logged In</span> : <>
           <form onSubmit={doLogin}>
             <label htmlFor="username">Username</label>
@@ -189,20 +300,22 @@ function App() {
             {login.error ? <p>{login.error}</p> : ''}
           </form>
         </>}
-          {'cell_stat_generic' in cellData ?
+          {'plmn' in cellData ?
           <>
           <dl>
             <dt>Connection Type</dt>
-            <dd>{cellData.cell_stat_generic[0].CurrentAccessTechnology}</dd>
+            {cellData.AccessTechnology ?
+            <dd>{cellData.AccessTechnology}</dd>
+            : <dd>Connection Information</dd>}
             <dt>Operator (PLMN/MCC-MNC)</dt>
             <dd>{cellData.plmn} ({cellData.plmn in plmn ? plmn[cellData.plmn] : 'Unknown'})</dd>
             <dt>eNB ID (Cell Site)</dt>
-            <dd>{cellData.cell_stat_lte[0].eNBID}</dd>
+            <dd>{cellData.eNBID}</dd>
             <dt>Cell ID (Cell Site)</dt>
-            <dd>{cellData.cell_stat_lte[0].Cellid}</dd>
+            <dd>{cellData.CellId}</dd>
           </dl>
-          <a className="ext-link" href={`https://www.cellmapper.net/map?MCC=${cellData.cell_stat_lte[0].MCC}&MNC=${cellData.cell_stat_lte[0].MNC}&type=LTE&latitude=44.967242999999996&longitude=-103.771556&zoom=5&showTowers=true&showTowerLabels=true&clusterEnabled=true&tilesEnabled=true&showOrphans=false&showNoFrequencyOnly=false&showFrequencyOnly=false&showBandwidthOnly=false&DateFilterType=Last&showHex=false&showVerifiedOnly=false&showUnverifiedOnly=false&showLTECAOnly=false&showENDCOnly=false&showBand=0&showSectorColours=true&mapType=roadmap`} target="_blank" rel="noindex nofollow noopener noreferrer">Cellmapper link</a>
-          <p>In left menu, expand "Tower Search" and copy and paste the eNB ID for your cell site ({cellData.cell_stat_lte[0].eNBID})</p>
+          <a className="ext-link" href={`https://www.cellmapper.net/map?MCC=${cellData.MCC}&MNC=${cellData.MNC}&type=LTE&latitude=${cellData?.gps?.latitude ?? 44.967242999999996}&longitude=${cellData?.gps?.longitude ?? -103.771556}&zoom=${cellData.hasOwnProperty('gps') ? 14 : 5}&showTowers=true&showTowerLabels=true&clusterEnabled=true&tilesEnabled=true&showOrphans=false&showNoFrequencyOnly=false&showFrequencyOnly=false&showBandwidthOnly=false&DateFilterType=Last&showHex=false&showVerifiedOnly=false&showUnverifiedOnly=false&showLTECAOnly=false&showENDCOnly=false&showBand=0&showSectorColours=true&mapType=roadmap`} target="_blank" rel="noindex nofollow noopener noreferrer">Cellmapper link</a>
+          <p>In left menu, expand "Tower Search" and copy and paste the eNB ID for your cell site ({cellData.eNBID})</p>
           </>
           : ''}
         <div className="summary">
@@ -228,7 +341,9 @@ function App() {
             SNRBest={data.length ? data.map(plot => plot.nr.SNRCurrent).filter(val => val !== null).reduce((best, val) => val > best ? val : best, -19.5) : null}
           />
         </div>
+        </> : ''}
       </header>
+      { model ? <>
       <main className="App-body">
         {renderComposedChart}
       </main>
@@ -253,6 +368,7 @@ function App() {
       <main className="App-body">
         {renderRSRQChart}
       </main>
+      </> : '' }
     </div>
   );
 }
