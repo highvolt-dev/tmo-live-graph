@@ -31,6 +31,29 @@ This will start the project at http://localhost:3000/
 
 This project has not been prepared to handle proxying in a production-ready release mode.
 
+### Configuration
+
+You can avoid specifying your gateway model and admin username/password by making use of an *environment file*.
+
+The default environment configuration is specified in the `.env` file.
+
+It is suggested that you make a copy as `.env.local`.
+
+Inside `.env.local` you can specify your desired configuration, e.g.:
+
+```
+REACT_APP_GATEWAY_MODEL=NOK5G21
+REACT_APP_USER=admin
+REACT_APP_PASSWORD=yourpassword
+```
+
+Note that the file has further instructions (helpful if you have the Arcadyan gateway).
+
+If necessary, you may need to enclose your value in single (`'`) or double quotes (`"`).
+
+When your environment file is fully configured, the application will not prompt you for your gateway model (Nokia vs Arcadyan) and will automatically attempt to log you into your gateway with the provided username and password, enabling advanced functionality that requires authentication against your administrative credentials.
+
+
 ## Cell Info
 
 This section requires authentication with admin username and password - login form appears at top of app.
