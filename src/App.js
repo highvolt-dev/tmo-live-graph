@@ -25,11 +25,17 @@ function useInterval(callback, delay) {
 }
 
 function App() {
-  const [model, setModel] = useState('');
+  const [model, setModel] = useState(process.env.REACT_APP_GATEWAY_MODEL || '');
   const [data, setData] = useState([]);
-  const [login, setLogin] = useState({username: 'admin', password: '', error: ''});
+  const [login, setLogin] = useState({username: process.env.REACT_APP_USER || 'admin', password: process.env.REACT_APP_PASSWORD || '', error: ''});
   const [loggedIn, setLoggedIn] = useState(false);
   const [cellData, setCellData] = useState({});
+  // Automatically login if saved in env
+  useEffect(() => {
+    if ( login.username && login.password) {
+      doLogin();
+    }
+  });
 
   const renderComposedChart = (
     <ComposedChart id="composed-chart" width={Math.min(1000, window.innerWidth)} height={Math.min(500, Math.floor(window.innerHeight * 0.4))} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -176,11 +182,11 @@ function App() {
     }
   }, 2000);
 
-  const doLogin = async e => {
+  const doLogin = async (e=undefined) => {
     if (!model) return;
     if (loggedIn) return;
 
-    e.target.disabled = true;
+    if (e) e.target.disabled = true;
 
     if (model === 'ARCKVD21') {
       const res = await fetch('/TMI/v1/auth/login', {
@@ -224,7 +230,7 @@ function App() {
         getCellInfoNokia();
       }
     }
-    e.target.disabled = false;
+    if (e) e.target.disabled = false;
   };
 
   const getCellInfoNokia = async () => {
