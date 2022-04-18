@@ -104,7 +104,8 @@ function App() {
         "RSRQCurrent": primary.rsrq,
         "DownlinkEarfcn": null, // Only available in authenticated telemetry endpoint
         "SignalStrengthLevel":0,
-        "Band": primary.bands.length ? primary.bands[0].toUpperCase() : null
+        "Band": primary.bands.length ? primary.bands[0].toUpperCase() : null,
+        "Firmware": json.device["softwareVersion"]
       };
 
       const nr = {
@@ -115,7 +116,8 @@ function App() {
         "RSRQCurrent": secondary.rsrq,
         "Downlink_NR_ARFCN": null, // Only available in authenticated telemetry endpoint
         "SignalStrengthLevel":0,
-        "Band": primary.bands.length ? primary.bands[0] : null
+        "Band": secondary.bands.length ? secondary.bands[0].toUpperCase() : null,
+        "Firmware": json.device["softwareVersion"]
       };
 
       if (primary['RSRPStrengthIndexCurrent'] === 0) {
@@ -285,7 +287,7 @@ function App() {
         <section>
           <h2>Model Selection</h2>
           {model ?
-          <>Selected: {model} <button onClick={(e) => {setModel('')}}>Change Selection</button></>
+          <>Selected: {model} {data.length ? '(v' + data.slice(-1)[0].nr.Firmware + ')' : null}<button onClick={(e) => {setModel('')}}>Change Selection</button></>
           :
           <select name="model" value={model} onChange={(e) => {setModel(e.target.value)}}>
             <option value="">Select a Model</option>
