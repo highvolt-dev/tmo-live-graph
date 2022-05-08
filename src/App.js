@@ -261,7 +261,7 @@ function App() {
     const json = await res.json();
 
     const data = {
-      eNBID: Math.floor(parseInt(json.cell['4g'].ecgi.substring(6), 16) / 256),
+      eNBID: Math.floor(parseInt(json.cell['4g'].ecgi.substring(6)) / 256),
       CellId: json.cell['4g'].sector.cid,
       MCC: json.cell['4g'].mcc,
       MNC: json.cell['4g'].mnc
