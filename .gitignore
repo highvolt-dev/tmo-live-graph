@@ -109,5 +109,8 @@ dist
 /.pnp
 .pnp.js
 
+# IDE
+.idea
+
 # misc
 .DS_Store
