@@ -104,7 +104,7 @@ function App() {
         "RSRQCurrent": primary.rsrq,
         "DownlinkEarfcn": null, // Only available in authenticated telemetry endpoint
         "SignalStrengthLevel":0,
-        "Band": primary.bands.length ? primary.bands[0].toUpperCase() : null
+        "Band": primary.bands.length ? primary.bands.map(b => b.toUpperCase()).join(", ") : null
       };
 
       const nr = {
@@ -115,7 +115,7 @@ function App() {
         "RSRQCurrent": secondary.rsrq,
         "Downlink_NR_ARFCN": null, // Only available in authenticated telemetry endpoint
         "SignalStrengthLevel":0,
-        "Band": primary.bands.length ? primary.bands[0] : null
+        "Band": secondary.bands.length ? secondary.bands.join(", ") : null
       };
 
       if (primary['RSRPStrengthIndexCurrent'] === 0) {
