@@ -7,7 +7,7 @@ function Card(props) {
       <h2>{props.title}</h2>
       {props.main ? (
         <>
-          <h3>Band{props.band.indexOf(",") >= 0 ? 's' : ''} {props.band ? props.band : 'N/A'}</h3>
+          <h3>Band{props?.band?.indexOf(",") >= 0 ? 's' : ''} {props.band ? props.band : 'N/A'}</h3>
           {props.signal === 'lte' && props.CA ? (
             <>
             <h3>Carrier Aggregation</h3>

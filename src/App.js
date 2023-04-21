@@ -115,7 +115,7 @@ function App() {
         "RSRQCurrent": secondary.rsrq,
         "Downlink_NR_ARFCN": null, // Only available in authenticated telemetry endpoint
         "SignalStrengthLevel":0,
-        "Band": secondary.bands.length ? secondary.bands.join(", ") : null
+        "Band": secondary?.bands?.length ? secondary.bands.join(", ") : null
       };
 
       if (primary['RSRPStrengthIndexCurrent'] === 0) {
